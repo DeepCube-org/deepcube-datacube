@@ -59,67 +59,20 @@ gdalwarp -t_srs EPSG:4326 input.tif output.nc
 
 optionally one can crop and regrid the files already during this step by setting target extent (`-te `) and target resolution (using `tr` or `ts` options).
 
-Then, from within a python session one first opens all the datasets to be cubed as xarray datasets. As examples, we here open an era5 land file and a static clc map. 
+See [datacube_gen_python](./datacube_gen_python.ipynb#minicube)
 
-````python
-import xarray as xr
-import dask
-import numpy as np
+## Using xcube
 
-era = xr.open_dataset("/Net/Groups/BGI/scratch/fgans/uc3-mini-dataset/ERA5-LAND/era5-land-hourly.nc")
-clc = xr.open_dataset("/Net/Groups/BGI/scratch/fgans/uc3-mini-dataset/CLC-2018-CROPPED_NC/cropped_CLC_2018.nc")
-````
+See [datacube_gen_python](./datacube_gen_python.ipynb#xcube)
 
-The next step would be to decide for a target spatial resolution and to create regridded representations of all input datasets. Here we assume that the target would be the CLC resolution. Then we can use xarray`s interp method to interpolate the data. The interpolation will fall back to scipy's interpolation methods and allows `linear` and `nearest` interpolations. For more complex/individual regridding, one can use gdal (see previous step) or xcube (next section). 
+# Rechunking
+## Using python rechunker and Dask
+See [datacube_gen_python](./datacube_gen_python.ipynb#rechunker)
 
-````python
-target_lon = clc.lon
-target_lat = clc.lat
-era_interp = era.chunk().interp({'longitude':target_lon, 'latitude':target_lat},  method = 'linear')
-````
+## Using julia
+See example in [datacube_rechunk](./datacube_rechunk_example.jl)
+## Using nco
+See [datacube_gen_python](./datacube_gen_python.ipynb#ncrechunk)
 
-Please note that it is essential to call `chunk` on the dataset to be regridded first to convert it to a dask array which is evaluated lazily. 
-
-In the next step we would collect all new output variables into one dictionary
-
-````python
-output_vars = {}
-for k in era_interp.keys():
-    output_vars[k] = era_interp[k]
-output_vars['clc'] = clc['Band1']
-````
-
-Then we create a new dataset from these DataArrays, select a target chunking and write the result to a new zarr file. 
-
-````python
-xr.Dataset(output_vars).chunk({'lon':200, 'lat':200}).to_zarr("./mydatacubelinear.zarr")
-````
-
-Note that this new dataset has identical spatial resolutions and through the small spatial chunks will have fast access to individual time series. 
-
-## Data Cube generation using xcube-gen
-
-### Prerequisites
-
-- every dataset is in NetCDF format, can consist of multiple files, but should be in a single folder
-- datasets should already be in equirectangular lon-lat coordinate system
-- make a config file in yaml format, an example config file would be:
-
-````yaml
-output_size: [2000,2000]
-output_region: [20, 36, 24, 39]
-output_writer_name: 'zarr'
-
-output_metadata:
-  created_by: 'NOA'
-  contact_email: 'yourmail@example.com'
-````
-
-- see [xcube-gen docs](https://xcube.readthedocs.io/en/latest/cli/xcube_gen.html) for more options
-- make sure that all static variables have a time dimension (use `ds.expand_dims`)
-- and add `time_bnds` attribute to them so they can be processed by the xcube default processor
-- Then cube the data by 
-
-````
-xcube gen -c xcube/config.yaml -o ./xcc.zarr ${PATH1}/*.nc ${PATH2}/cropped_CLC_2018_time.nc
-````
+# Publishing data cube
+See [datacube_publish](./datacube_publish.md)
