@@ -19,7 +19,7 @@ conda install -c conda-forge python-swiftclient
 conda install -c conda-forge python-keystoneclient
 ```
 
-You then need to authenticate with the swift object store. You run [this script](./openstack_auth.sh) to set the swift credentials, the user password is 9RdWMyWYvBKFkDKVzbTtNADrA24F3h8R 
+You then need to authenticate with the swift object store. You run [this script](./openstack_auth.sh) to set the swift credentials, the user password is available on request. 
 
 ```bash
 $ source ./openstack_auth.sh
