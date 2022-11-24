@@ -6,7 +6,15 @@ Data cubes used by DeepCube Use Cases are published on the OVH store, part of th
 
 First of all to deploy this efficiently on the object store you will need to convert the dataset to zarr format. This is usually done with Python `xarray` by loading the dataset and then calling `ds.to_zarr("path/to/output")`. See [datacube_gen_python](./datacube_gen_python.ipynb) for details.
 
-Make sure to **consolidate metadata** before going to the next step. Thre should be a .zmetadata file in the zarr folder, e.g. `mycube.zarr/.zmetadata`.
+Make sure to **consolidate metadata** before going to the next step. You can do so using Python's `zarr`:
+
+```python
+import zarr
+path2cube = "/Path/To/Cube/mycube.zarr"
+g = zarr.open_group(path2cube)
+zarr.consolidate_metadata(g.store)
+```
+There should then be a .zmetadata file in the zarr folder, e.g. `mycube.zarr/.zmetadata`. 
 
 ## Cube deployment with Swift (OpenStack Object store project) {#cube_depl}
 
