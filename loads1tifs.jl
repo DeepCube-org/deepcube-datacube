@@ -6,8 +6,8 @@ using InteractiveUtils
 
 # ╔═╡ b5082844-5b0b-11eb-0397-8b4ec205d6e8
 begin
-using ESDL
-md"The **ESDL** package implements the Earth system data lab datacube"
+using EarthDataLab
+md"The **EarthDataLab** package implements the Earth system data lab datacube"
 end
 
 # ╔═╡ d947b62a-5c9d-11eb-3f72-c7c62f159328
@@ -50,7 +50,7 @@ end
 md"# How to use raster datasets in the ESDL datacube"
 
 # ╔═╡ 2744eda6-5b0d-11eb-1cb9-43150a1072e3
-md" In this tutorial we explore how we can use the ESDL Julia datacube package to load and process raster datasets, which we can open with GDAL.
+md" In this tutorial we explore how we can use the EarthDataLab Julia datacube package to load and process raster datasets, which we can open with GDAL.
 To do that we need a list of raster datasets which have the same spatial resolution and extent. In this tutorial we use a stack of Sentinel-1 time series which we have prepared with the pyroSAR package
 "
 
