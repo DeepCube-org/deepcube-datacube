@@ -38,7 +38,7 @@ Currently, in order for all of the python-based approaches to work, one needs to
 ## Generating single-resolution data cubes
 
 
-## Cube generation in Julia using ESDL.jl
+## Cube generation in Julia using EarthDataLab.jl
 
 - If you want to use Julia for the data cube generation you can follow the [tutorial notebook](loads1tifs.jl)
 
